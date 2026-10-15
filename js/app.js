@@ -36,8 +36,8 @@ function sembrar() {
     pendiente: null,       // lo último que espera el OK de David
     borradorCorreo: null,
     presupuestos: [],
-    abierto: null,         // chat abierto en el número de Axis
-    como: 'david',         // en el número de Axis: escribir como David o como el cliente
+    abierto: null,         // chat abierto en el WhatsApp de la empresa
+    como: 'david',         // en el WhatsApp de la empresa: escribir como David o como el cliente
     vista: 'negocio',
     noLeidoAsis: 0,
     tarifario: [
@@ -71,7 +71,7 @@ function sembrar() {
     { de: 'cliente', texto: 'Gracias por todo, el jueves firmamos.', min: -2900 },
     { de: 'david', texto: 'Gracias a vos Lucía, te esperamos el jueves.', min: -2890 },
   ], { saludado: true });
-  asisDice('Buen día David. Estoy conectado a tu Gmail, tu Drive y al número de Axis. Pedime lo que necesites: presupuestos, correos, archivos o respuestas a clientes.');
+  asisDice('Buen día David. Estoy conectado a tu Gmail, tu Drive y al WhatsApp de la empresa. Pedime lo que necesites: presupuestos, correos, archivos o respuestas a clientes.');
   S.noLeidoAsis = 0;
 }
 
@@ -98,10 +98,10 @@ function asisDice(texto, extra = {}) {
 }
 function avisarADavid(texto, botones = []) {
   tic(); asisDice(texto, { botones, aviso: true });
-  aviso('Tu asistente te escribió en tu línea personal');
+  aviso('El asistente le escribió a David en su WhatsApp personal');
 }
 
-/* ================= 1. el agente en el número de Axis ================= */
+/* ================= 1. el agente en el WhatsApp de la empresa ================= */
 function clienteEscribe(tel, texto, { nombre = null, foto = false } = {}) {
   tic();
   let c = S.chats[tel];
@@ -124,7 +124,7 @@ function agente(c, texto, foto) {
   // urgente: no se resuelve, se avisa ya
   if (/peligro|urgente|derrumb|incendio|chispa|cano|agua|herid|se cayo|se rompio/.test(t)) {
     agenteDice(c, `Entendido, ${nom}. Ya le avisé a David como urgente y se comunica con usted enseguida. Si hay riesgo para alguien, por favor aléjese del lugar.`);
-    avisarADavid(`URGENTE · ${c.nombre} escribió al número de Axis: "${texto}". No le prometí nada, solo que te comunicás vos.`, ['Abrir la charla']);
+    avisarADavid(`URGENTE · ${c.nombre} escribió al WhatsApp de la empresa: "${texto}". No le prometí nada, solo que te comunicás vos.`, ['Abrir la charla']);
     actividad('alerta', `Aviso urgente a David por el mensaje de ${c.nombre}.`);
     return;
   }
@@ -184,7 +184,7 @@ function agente(c, texto, foto) {
   avisarADavid(`${c.nombre} preguntó: "${texto}". No tengo una respuesta segura, ¿le contestás vos o me decís qué decirle?`, ['Abrir la charla']);
 }
 
-/* David contesta desde su celular, en el número de Axis */
+/* David contesta desde su celular, en el WhatsApp de la empresa */
 function davidEscribeEnNegocio(tel, texto) {
   tic();
   const c = S.chats[tel];
@@ -210,7 +210,7 @@ function asistente(texto) {
     if (!tel) return dice('No tengo un pedido de presupuesto pendiente. Decime para quién y qué trabajo, por ejemplo: "armale a María pintura de portón 12 m² y muralla 40 m²".');
     return armarPresupuesto(S.chats[tel]);
   }
-  if (/^lo veo yo/.test(t)) { S.pendiente = null; return dice('Perfecto, queda para vos. La charla está en el número de Axis.'); }
+  if (/^lo veo yo/.test(t)) { S.pendiente = null; return dice('Perfecto, queda para vos. La charla está en el WhatsApp de la empresa.'); }
   const cambio = t.match(/(cambia|pone|subi|baja)[a-z]*\s+(el\s+|la\s+)?(porton|muralla)[^\d]*(\d+[.,]?\d*)/);
   if (cambio) {
     const p = S.presupuestos.slice(-1)[0];
@@ -242,9 +242,9 @@ function asistente(texto) {
     }
     if (chat) {
       S.pendiente = { tipo: 'whatsapp', tel: chat.tel, texto: que.charAt(0).toUpperCase() + que.slice(1) };
-      return dice(`Le escribo a ${chat.nombre} por el número de Axis:\n"${S.pendiente.texto}"\n¿Lo mando?`, { botones: ['Enviar', 'Cambiar algo'] });
+      return dice(`Le escribo a ${chat.nombre} por el WhatsApp de la empresa:\n"${S.pendiente.texto}"\n¿Lo mando?`, { botones: ['Enviar', 'Cambiar algo'] });
     }
-    return dice(`No encuentro a "${resp[2]}" ni en tus correos ni en los chats del número de Axis.`);
+    return dice(`No encuentro a "${resp[2]}" ni en tus correos ni en los chats del WhatsApp de la empresa.`);
   }
   if (/^(enviar|envialo|si,? envia|dale)$/.test(t) || /^enviar\b/.test(t)) {
     if (S.pendiente?.tipo === 'correo') {
@@ -255,8 +255,8 @@ function asistente(texto) {
     if (S.pendiente?.tipo === 'whatsapp') {
       const { tel, texto: txt } = S.pendiente; S.pendiente = null;
       tic(); enChat(tel, 'asistente', txt);
-      actividad('whatsapp', `Le escribió a ${S.chats[tel].nombre} por el número de Axis, por pedido de David.`);
-      return dice(`Listo, se lo mandé a ${S.chats[tel].nombre} desde el número de Axis.`);
+      actividad('whatsapp', `Le escribió a ${S.chats[tel].nombre} por el WhatsApp de la empresa, por pedido de David.`);
+      return dice(`Listo, se lo mandé a ${S.chats[tel].nombre} desde el WhatsApp de la empresa.`);
     }
     if (S.pendiente?.tipo === 'enviar') return enviarPresupuesto();
     return dice('No tengo nada esperando para enviar.');
@@ -272,11 +272,11 @@ function asistente(texto) {
     return dice(hall.length === 1 ? `Lo encontré en Drive › ${hall[0].carpeta}. ¿Se lo mando a alguien?` : `Encontré ${hall.length} archivos:`, { archivos: hall });
   }
 
-  // --- pendientes del número de Axis ---
+  // --- pendientes del WhatsApp de la empresa ---
   if (/sin contestar|sin responder|pendiente|que me escribieron|whats|wasap|quien me escribio/.test(t)) {
     const aten = Object.values(S.chats).filter((c) => c.pausaHasta && c.pausaHasta > S.reloj);
     const pend = Object.values(S.chats).filter((c) => { const u = c.mensajes[c.mensajes.length - 1]; return u && u.de === 'cliente' && !aten.includes(c); });
-    return dice(`${pend.length ? `Esperan respuesta: ${pend.map((c) => `${c.nombre} ("${c.mensajes[c.mensajes.length - 1].texto.slice(0, 50)}")`).join('; ')}.` : 'No hay clientes esperando respuesta en el número de Axis.'}${aten.length ? ` Estás atendiendo vos: ${aten.map((c) => c.nombre).join(', ')}.` : ''}`);
+    return dice(`${pend.length ? `Esperan respuesta: ${pend.map((c) => `${c.nombre} ("${c.mensajes[c.mensajes.length - 1].texto.slice(0, 50)}")`).join('; ')}.` : 'No hay clientes esperando respuesta en el WhatsApp de la empresa.'}${aten.length ? ` Estás atendiendo vos: ${aten.map((c) => c.nombre).join(', ')}.` : ''}`);
   }
   if (/abrir la charla/.test(t)) { ir('negocio'); return; }
   if (/^(hola|buen dia|buenas)/.test(t)) return dice('Buen día David. Probá: "resumime los correos", "buscame el contrato de Lucía", "qué tengo sin contestar" o "respondele a González que el jueves a las 10 vamos a ver el terreno".');
@@ -305,9 +305,9 @@ function enviarPresupuesto() {
   c.etapa = 'presupuesto_enviado';
   tic(); enChat(p.tel, 'asistente', `Buen día ${c.nombre.split(' ')[0]}. Le enviamos el presupuesto ${p.numero} por ${Gs(p.total)}, IVA incluido. Para iniciar se requiere un anticipo del ${p.anticipo}% (${Gs(p.total * p.anticipo / 100)}). Quedamos a disposición para cualquier consulta.`, { pdf: p.numero });
   actividad('drive', `Guardó "Presupuesto ${p.numero} - ${p.cliente}.pdf" en Drive › Presupuestos 2026.`);
-  actividad('whatsapp', `Mandó el presupuesto ${p.numero} a ${p.cliente} desde el número de Axis.`);
+  actividad('whatsapp', `Mandó el presupuesto ${p.numero} a ${p.cliente} desde el WhatsApp de la empresa.`);
   S.drive.push({ nombre: `Presupuesto ${p.numero} - ${p.cliente}.pdf`, carpeta: 'Presupuestos 2026', tipo: 'pdf' });
-  tic(); asisDice(`Enviado a ${p.cliente} desde el número de Axis, y guardado en Drive › Presupuestos 2026. Si en 2 días no responde, te aviso.`);
+  tic(); asisDice(`Enviado a ${p.cliente} desde el WhatsApp de la empresa, y guardado en Drive › Presupuestos 2026. Si en 2 días no responde, te aviso.`);
 }
 
 /* ---------------- render ---------------- */
@@ -329,7 +329,7 @@ function burbuja(m, lado, nueva = false) {
 function renderNegocio() {
   const cab = $('#negCab'), cuerpo = $('#negCuerpo');
   if (!S.abierto) {
-    cab.innerHTML = `<div class="avatar oro"><img src="img/x-axis.svg" alt=""></div><div><div class="wa-nombre">Axis Constructora | HSI</div><div class="wa-sub">WhatsApp Business · celular de David</div></div>`;
+    cab.innerHTML = `<div class="avatar oro"><img src="img/x-axis.svg" alt=""></div><div><div class="wa-nombre">Axis Constructora | HSI</div><div class="wa-sub">WhatsApp de la empresa · así lo ve David en su celular</div></div>`;
     cuerpo.className = 'wa-cuerpo lista';
     cuerpo.innerHTML = S.orden.map((tel) => {
       const c = S.chats[tel]; const u = c.mensajes[c.mensajes.length - 1];
@@ -371,16 +371,16 @@ function renderActividad() {
 /* ---------------- guión ---------------- */
 const M = '+595971111111';
 const GUION = [
-  { t: 'Un cliente nuevo escribe al número de Axis', d: 'El asistente atiende, toma los datos y le pasa el pedido a David.', pasos: [
+  { t: 'Un cliente nuevo escribe al WhatsApp de la empresa', d: 'El asistente atiende, toma los datos y le pasa el pedido a David.', pasos: [
     { cliente: M, nombre: 'María Benítez', txt: 'Hola, buenas. Necesito presupuesto para pintar el portón y la muralla de mi casa' },
     { cliente: M, txt: 'Lambaré, barrio Santa Rosa' },
     { cliente: M, txt: 'El portón tiene unos 12 m² y la muralla unos 40 m²' } ] },
-  { t: 'David arma el presupuesto desde su línea personal', d: 'Con el tarifario del Drive. Nada sale sin su OK.', pasos: [
+  { t: 'David pide el presupuesto desde su WhatsApp personal', d: 'Con el tarifario del Drive. Nada sale sin su OK.', pasos: [
     { david: 'Armalo' }, { david: 'Cambiá la muralla a 45 m²' }, { nota: 'Tocá el PDF en el chat para ver el presupuesto.' }, { david: 'Mandalo' },
     { cliente: M, txt: 'Perfecto, ¿con cuánto se inicia?' } ] },
   { t: 'David contesta él mismo y el asistente se corre', d: 'Mismo número, los dos pueden responder.', pasos: [
     { cliente: '+595972222222', txt: 'Buenas, ¿podemos pasar el inicio de la obra al martes?' },
-    { abrir: '+595972222222', txt: 'Abrir la charla de Carlos en el número de Axis' },
+    { abrir: '+595972222222', txt: 'Abrir la charla de Carlos en el WhatsApp de la empresa' },
     { negocioDavid: '+595972222222', txt: 'Sí Carlos, el martes a las 8 sin problema' },
     { cliente: '+595972222222', txt: 'Genial, gracias David' },
     { nota: 'El asistente no se mete: David está atendiendo esa charla. Con "Devolver al asistente" vuelve a responder.' } ] },
@@ -395,14 +395,14 @@ const GUION = [
     { david: '¿Qué tengo sin contestar?' } ] },
 ];
 function renderGuion() {
-  $('#panGuion').innerHTML = `<p class="intro">Tocá cada paso en orden. A la izquierda ves el número de Axis; en el medio, la línea personal de David con su asistente.</p>` +
+  $('#panGuion').innerHTML = `<p class="intro">Tocá cada paso en orden. Pantalla 1: el WhatsApp de la empresa, donde escriben los clientes. Pantalla 2: el WhatsApp personal de David, donde le pide cosas a su asistente.</p>` +
     GUION.map((g, i) => `<details ${i < 2 ? 'open' : ''}><summary><b>${i + 1}</b>${esc(g.t)}</summary><p class="desc">${esc(g.d)}</p>${g.pasos.map((p) => {
       if (p.nota) return `<p class="nota">${esc(p.nota)}</p>`;
-      if (p.david) return `<button class="paso" data-paso='${esc(JSON.stringify(p))}'><span class="quien d">David → asistente</span>${esc(p.david)}</button>`;
+      if (p.david) return `<button class="paso" data-paso='${esc(JSON.stringify(p))}'><span class="quien d">David, en su WhatsApp personal</span>${esc(p.david)}</button>`;
       if (p.abrir) return `<button class="paso accion" data-paso='${esc(JSON.stringify(p))}'>${esc(p.txt)}</button>`;
-      if (p.negocioDavid) return `<button class="paso" data-paso='${esc(JSON.stringify(p))}'><span class="quien d">David responde desde su celular</span>${esc(p.txt)}</button>`;
+      if (p.negocioDavid) return `<button class="paso" data-paso='${esc(JSON.stringify(p))}'><span class="quien d">David contesta en el WhatsApp de la empresa</span>${esc(p.txt)}</button>`;
       const nom = p.nombre || S.chats[p.cliente]?.nombre || (p.cliente === M ? 'María Benítez' : 'Cliente');
-      return `<button class="paso" data-paso='${esc(JSON.stringify({ ...p, nombre: nom }))}'><span class="quien c">${esc(nom)} → número de Axis</span>${p.foto ? '📷 ' : ''}${esc(p.txt)}</button>`;
+      return `<button class="paso" data-paso='${esc(JSON.stringify({ ...p, nombre: nom }))}'><span class="quien c">${esc(nom)} · cliente, al WhatsApp de la empresa</span>${p.foto ? '📷 ' : ''}${esc(p.txt)}</button>`;
     }).join('')}</details>`).join('');
 }
 
