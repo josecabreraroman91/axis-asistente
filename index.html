@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Axis · asistente de David</title>
+<link rel="icon" href="img/x-axis.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css?v=2">
+</head>
+<body>
+
+<header class="cab">
+  <img class="cab-x" src="img/x-axis.svg" alt="">
+  <div class="cab-txt">
+    <div class="cab-nombre">AXIS <span>· asistente de David</span></div>
+    <div class="cab-sub">Un solo número para los clientes. Un asistente para David.</div>
+  </div>
+  <button class="reiniciar" id="btnReiniciar" title="Volver al inicio">Reiniciar demo</button>
+</header>
+
+<main class="tablero" id="tablero">
+
+  <!-- ───── 1. el número de Axis (celular de David, WhatsApp Business) ───── -->
+  <section class="col" data-vista="negocio">
+    <div class="col-tit"><b>1</b> El número de Axis <small>WhatsApp Business · donde escriben los clientes</small></div>
+    <div class="celu">
+      <div class="wa-cab" id="negCab"></div>
+      <div class="wa-cuerpo" id="negCuerpo"></div>
+      <form class="wa-entrada" id="negForm">
+        <div class="como" id="negComo"></div>
+        <input id="negInput" autocomplete="off" placeholder="Escribir…">
+        <button type="submit" class="enviar" title="Enviar"><svg viewBox="0 0 24 24"><path d="M3 11.5 21 3l-6 18-3.5-7.5z"/></svg></button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ───── 2. el asistente (línea personal de David) ───── -->
+  <section class="col" data-vista="asistente">
+    <div class="col-tit"><b>2</b> El asistente de David <small>desde su línea personal</small></div>
+    <div class="celu">
+      <div class="wa-cab">
+        <div class="avatar oro"><img src="img/x-axis.svg" alt=""></div>
+        <div><div class="wa-nombre">Asistente Axis</div><div class="wa-sub">Gmail · Drive · presupuestos · WhatsApp</div></div>
+      </div>
+      <div class="wa-cuerpo chat" id="asisChat"></div>
+      <div class="wa-botones" id="asisBotones"></div>
+      <form class="wa-entrada" id="asisForm">
+        <input id="asisInput" autocomplete="off" placeholder="Pedile algo a tu asistente…">
+        <button type="submit" class="enviar" title="Enviar"><svg viewBox="0 0 24 24"><path d="M3 11.5 21 3l-6 18-3.5-7.5z"/></svg></button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ───── 3. guión y actividad ───── -->
+  <section class="col lado" data-vista="guion">
+    <div class="pestanas">
+      <button class="activa" data-pest="guion">Guión</button>
+      <button data-pest="actividad">Lo que hizo <span id="nAct"></span></button>
+    </div>
+    <div class="panel" id="panGuion"></div>
+    <div class="panel oculto" id="panActividad"></div>
+  </section>
+</main>
+
+<!-- navegación en celular -->
+<nav class="abajo" id="abajo">
+  <button data-ir="negocio" class="activa"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z"/></svg>Número de Axis<b id="nNeg"></b></button>
+  <button data-ir="asistente"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Asistente<b id="nAsis"></b></button>
+  <button data-ir="guion"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM9 12h6M9 16h6"/></svg>Guión</button>
+</nav>
+
+<!-- vista del presupuesto en PDF -->
+<div class="modal oculto" id="modal">
+  <div class="modal-caja">
+    <div class="modal-barra"><span id="modalTit"></span><span><button id="btnImprimir">Imprimir / guardar PDF</button><button id="btnCerrar">Cerrar</button></span></div>
+    <div class="hoja-scroll"><div class="hoja" id="hoja"></div></div>
+  </div>
+</div>
+
+<div class="aviso" id="aviso"></div>
+<footer class="pie">Demo · un sistema de orbepy · nada sale a WhatsApp, Gmail ni Drive reales</footer>
+
+<script src="js/app.js?v=2"></script>
+</body>
+</html>

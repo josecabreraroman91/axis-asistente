@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="15 205 612 540" role="img" aria-label="Axis">
+  <defs>
+    <!-- oro profundo con brillos, en diagonal como el original -->
+    <linearGradient id="oro" gradientUnits="userSpaceOnUse" x1="30" y1="215" x2="610" y2="735">
+      <stop offset="0" stop-color="#6e4507"/>
+      <stop offset=".1" stop-color="#d4930f"/>
+      <stop offset=".2" stop-color="#ffe08a"/>
+      <stop offset=".3" stop-color="#c07f0c"/>
+      <stop offset=".44" stop-color="#f6c443"/>
+      <stop offset=".5" stop-color="#fff3c4"/>
+      <stop offset=".57" stop-color="#e9ad2a"/>
+      <stop offset=".72" stop-color="#b8780b"/>
+      <stop offset=".84" stop-color="#ffd463"/>
+      <stop offset="1" stop-color="#7a4c06"/>
+    </linearGradient>
+    <!-- cara oscura del bisel -->
+    <linearGradient id="sombra" gradientUnits="userSpaceOnUse" x1="30" y1="215" x2="610" y2="735">
+      <stop offset="0" stop-color="#4a2e03"/>
+      <stop offset=".5" stop-color="#8a5a08"/>
+      <stop offset="1" stop-color="#4a2e03"/>
+    </linearGradient>
+    <linearGradient id="filo" gradientUnits="userSpaceOnUse" x1="30" y1="215" x2="610" y2="735">
+      <stop offset="0" stop-color="#fff2c2" stop-opacity=".15"/>
+      <stop offset=".5" stop-color="#ffffff" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#fff2c2" stop-opacity=".15"/>
+    </linearGradient>
+    <path id="pieza" d="M43 217 L240 477 L84 693 L223 692 L317 545 L410 723 L317 593 L247 732 L25 730 L200 479 Z"/>
+    <!-- la mitad interna de cada trazo: da el bisel -->
+    <path id="bisel" d="M43 217 L220 478 L54 712 L235 712 L317 569 L410 723 L317 593 L247 732 L25 730 L200 479 Z"/>
+    <g id="mitad">
+      <use href="#pieza" fill="url(#oro)"/>
+      <use href="#bisel" fill="url(#sombra)" opacity=".55"/>
+      <use href="#pieza" fill="none" stroke="#3d2602" stroke-width="2.5"/>
+      <use href="#pieza" fill="none" stroke="url(#filo)" stroke-width="1.8" transform="translate(1.2 -1.2)"/>
+    </g>
+  </defs>
+  <use href="#mitad"/>
+  <use href="#mitad" transform="rotate(180 321 476)"/>
+</svg>
